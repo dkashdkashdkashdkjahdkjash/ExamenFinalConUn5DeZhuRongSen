@@ -4,7 +4,10 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
+import android.widget.Spinner
 import android.widget.Toast
+import com.example.mapasclase_2425.databinding.ActivityMapsBinding
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -12,12 +15,26 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.example.mapasclase_2425.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import java.net.URL
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    private val imagenes = arrayOf(
+        R.drawable.julian_marias_logo,
+        R.drawable.virgen_espino_logo,
+        R.drawable.claudio_moyano_logo,
+        R.drawable.ic_placeholder
+    )
+    private val institutosLatitud = arrayOf(
+        123.2,
+        40.0,
+        -40.0
+    )
+    private val institutosLongitud = arrayOf(
+        -4.758719054533834,
+        30.0,
+        -30.0
+    )
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
 
@@ -31,6 +48,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        val spinner = findViewById<Spinner>(R.id.spinner2)
+        val verViajes = findViewById<Button>(R.id.buttonVerViajes)
+        val añadirViaje = findViewById<Button>(R.id.buttonGuardar)
+        verViajes.setOnClickListener(){
+            val intentVerViajes = Intent(this,ThirdActivity::class.java)
+            startActivity(intentVerViajes)
+        }
+        añadirViaje.setOnClickListener(){
+            Toast.makeText(this,"Viaje añadido",Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     /**
@@ -45,11 +73,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        val julianMarias = LatLng(41.63195004853906, -4.758719054533834)
-        mMap.addMarker(MarkerOptions().position(julianMarias).title("Marker in Institudo Julian Marias"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(julianMarias))
+
+        val longitud = institutosLongitud[intent.getIntExtra("position",0)]
+        val latitud = institutosLatitud[intent.getIntExtra("position",0)]
+        val sydney = LatLng(longitud, latitud)
+        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Institudo Julian Marias"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
 
         //Método que muestra la latitud y la longitud
@@ -85,6 +114,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             true
         }
     }
+
+
+
+
 
 
 }
